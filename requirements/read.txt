@@ -1,0 +1,5 @@
+pip freeze > requirements\requirements.txt
+
+https://www.gyan.dev/ffmpeg/builds/
+https://ffmpeg.org/download.html#build-windows
+Add ffmpeg\bin to PATH variable

@@ -1,0 +1,17 @@
+**/__pycache__/
+*.cache/
+*.pycache/
+/__pycache__
+__pycache__/
+*.dist/
+*.build/
+*.pyc
+**/.venv/
+/.venv
+.venv/
+*.pdf
+*.xlsx
+*.vscode
+.vscode
+timework/pinterest/QRes/*
+QRes/*
