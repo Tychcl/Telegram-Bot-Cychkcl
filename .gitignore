@@ -13,5 +13,7 @@ __pycache__/
 *.xlsx
 *.vscode
 .vscode
-timework/pinterest/QRes/*
-QRes/*
+timework/pinterest/QRes/*.json
+QRes/*.json
+har_and_cookies
+handlers/generated_images/*.jpg

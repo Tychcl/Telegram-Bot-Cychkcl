@@ -97,22 +97,48 @@ async def start_questionnaire_process(message: Message, state: FSMContext):
     data = await state.get_data()
     await state.set_state(None)
     await bot.edit_message_text(chat_id=message.chat.id,message_id=data['botmsgid'], text="Идет генерация")
-    path = await ImageGen(data['prompt'], data['form'][0], data['form'][1])
-    photo_file = FSInputFile(path=path)
-    await message.answer_photo(photo=photo_file, reply_markup=keyboard(), caption=data['prompt'])
+    client = Client()
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": f"Translate the following text to English: {data['prompt']}, only answer without other text pls"}]
+    )
+    await state.update_data(prompt=response.choices[0].message.content)
+    data = await state.get_data()
+    response = client.images.generate(
+        model="dall-e-3",
+        prompt=data['prompt'],
+        width=data['form'][0],
+        height=data['form'][1]
+    )
+    path=response.data[0].url.replace("/images/","handlers/generated_images/")
+    image = FSInputFile(path=path)
+    await message.answer_photo(photo=image, reply_markup=keyboard(), caption=data['prompt'])
     await bot.delete_message(chat_id=message.chat.id, message_id=data['botmsgid'])
     os.remove(path)
+    #path = await ImageGen(data['prompt'], data['form'][0], data['form'][1])
+    #photo_file = FSInputFile(path=path)
+    #await message.answer_photo(photo=photo_file, reply_markup=keyboard(), caption=data['prompt'])
+    #await bot.delete_message(chat_id=message.chat.id, message_id=data['botmsgid'])
+    #os.remove(path)
 
 @AI_router.message(F.text == "Еще раз ♻")
 async def AIagainImage(message: Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
     o = await message.answer(text="Идет генерация", reply_markup=main_kb(message))
-    path = await ImageGen(data['prompt'], data['form'][0], data['form'][1])
-    photo_file = FSInputFile(path=path)
-    await message.answer_photo(photo=photo_file, reply_markup=keyboard(), caption=data['prompt'])
-    await o.delete()
+    client = Client()
+    response = client.images.generate(
+        model="dall-e-3",
+        prompt=data['prompt'],
+        width=data['form'][0],
+        height=data['form'][1]
+    )
+    path=response.data[0].url.replace("/images/","handlers/generated_images/")
+    image = FSInputFile(path=path)
+    await message.answer_photo(photo=image, reply_markup=keyboard(), caption=data['prompt'])
+    await bot.delete_message(chat_id=message.chat.id, message_id=data['botmsgid'])
     os.remove(path)
+    await o.delete()
 
 @AI_router.callback_query(F.data == 'image')
 async def AIimage(call: CallbackQuery, state: FSMContext):
@@ -167,9 +193,9 @@ async def portraitimage(call: CallbackQuery, state: FSMContext):
 
 #ГЕНЕРАЦИЯ ОТВЕТОВ
 
-#class AIText(StatesGroup()):
-    #prompt = State()
-    #response = State()
+class AIText(StatesGroup()):
+    context = State()
+    prompt = State()
 
 
 
