@@ -7,16 +7,22 @@ def inkb():
         [InlineKeyboardButton(text="Текст/Ответ(WIP) 📓", callback_data='text')],
         [InlineKeyboardButton(text="Отмена ❌", callback_data='cancel')]
     ]
-    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list)
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list), "Что хочешь сделать?"
 
-def format(x):
+def format():
     inline_kb_list = [
-        [InlineKeyboardButton(text="Квадрат 🔳", callback_data=f'square{x}')],
-        [InlineKeyboardButton(text="Пейзаж 🖼", callback_data=f'landscape{x}')],
-        [InlineKeyboardButton(text="Портрет 🎴", callback_data=f'portrait{x}')],
-        [InlineKeyboardButton(text="Отмена ❌", callback_data=f'cancel{x}')]
+        [InlineKeyboardButton(text="Квадрат 🔳", callback_data='square.1024.1024')],
+        [InlineKeyboardButton(text="Пейзаж 🖼", callback_data='land.1024.512')],
+        [InlineKeyboardButton(text="Портрет 🎴", callback_data='port.512.1024')],
+        [InlineKeyboardButton(text="⏪", callback_data='back'), InlineKeyboardButton(text="❌", callback_data='cancel')]
     ]
-    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list)
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list), "Выбери формат"
+
+def prompt():
+    inline_kb_list = [
+        [InlineKeyboardButton(text="⏪", callback_data='back'), InlineKeyboardButton(text="❌", callback_data='cancel')]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list), "Напиши промпт"
 
 def keyboard():
     kb_list = [
