@@ -76,18 +76,23 @@ async def Sqare_Format(call: CallbackQuery, state: FSMContext):
 async def AI_Image_Generation(message: Message, state: FSMContext):
     await state.update_data(Prompt = message.text)
     data = await state.get_data()
+    await bot.delete_message(chat_id=data['ChatId'] ,message_id=data['StartMessageId'])
+    msg = await message.answer(text="Генерирую✏", reply_markup=None)
     translate = [{
         "role": "user",
         "content": f"Translate the following text to English: {data['Prompt']}, only answer without other text pls"
     }]
-    client = Client()
     try:
+        client = Client()
+        print(translate)
         Prompt = await Use_AI(Get_Answer, client, translate)
+        print(Prompt)
         url = await Use_AI(Get_Image, client, Prompt.content, data['Width'], data['Height'])
+        print(url)
     except:
         await state.clear()
         await state.set_state(None)
-        await message.answer("Ошибка😒")
+        await msg.edit_text(text="Ошибка😒")
         return
     media = [InputMediaPhoto(media=url, caption=message.text)]
     await message.answer_media_group(media=media)
